@@ -5,7 +5,7 @@ In my OS there are 3 games, Tic Tac Toe against an AI, Snake, and Chess.
 ## Opening screen
 
 You can type anything here and press enter or escape for no newline to be created, to play games type:
-- For tic tac toe type ttt into the kernel
+- For tic tac toe type ttt into the kernel.
 - For Snake type snake into the kernel.
 - For chess type chess into the kernel.
 
@@ -13,7 +13,7 @@ You can type anything here and press enter or escape for no newline to be create
 
 ### Tic Tac Toe
 
-Tic tac toe is against an AI and uses the minimax algorythm
+Tic tac toe is against an AI and uses the minimax algorithm.
 
 ![](TTT.png)
 
