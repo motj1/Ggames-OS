@@ -133,7 +133,10 @@ enum {
 
 void print_clear();
 void print_char(char character);
+void print_char_color(char character, uint8_t colour);
+void printPos(int col, int row, uint8_t colour, char character);
 void print_str(char *string);
+void print_str_color(char *str, uint8_t colour);
 void print_int(int num);
 void print_set_color(uint8_t foreground, uint8_t background);
 void kernel_entry();
@@ -143,6 +146,7 @@ void MSDelay(unsigned int itime);
 char Input[255];
 char *input();
 char getC();
+char getC_time(uint32_t time);
 
 int strcmp(char *s1, char *s2);
 
@@ -152,3 +156,4 @@ void SnakegameLoop();
 unsigned int rand();
 
 void ChessGameloop();
+void tetrisMainLoop();

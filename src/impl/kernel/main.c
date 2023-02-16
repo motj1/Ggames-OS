@@ -115,5 +115,7 @@ void kernel_main() {
                 return;
             MSDelay(1000000);
         }
-    }
+    } 
+    
+    tetrisMainLoop();
 }
