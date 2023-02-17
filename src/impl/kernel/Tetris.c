@@ -19,28 +19,29 @@ char S[4][1] = { {'c'}, {'c'}, {'c'}, {'c'} };
 char L[3][2] = { {'b', ' '}, {'b', ' '}, {'b', 'b'} };
 char Q[2][2] = { {'y', 'y'}, {'y', 'y'} };
 char T[2][3] = { {' ', 'p', ' '}, {'p', 'p', 'p'} };
+char Car[3][1] = { {'r'}, {'p'}, {'p'} };
 
-char board[20][10] = { "          ",
-                       "          ",
-                       "          ",
-                       "          ",
-                       "          ",
-                       "          ",
-                       "          ",
-                       "          ",
-                       "          ",
-                       "          ",
-                       "          ",
-                       "          ",
-                       "          ",
-                       "          ",
-                       "          ",
-                       "          ",
-                       "          ",
-                       "          ",
-                       "          ",
-                       "          " };
-
+char board[20][11] = { "           ",
+                       "           ",
+                       "           ",
+                       "           ",
+                       "           ",
+                       "           ",
+                       "           ",
+                       "           ",
+                       "           ",
+                       "           ",
+                       "           ",
+                       "           ",
+                       "           ",
+                       "           ",
+                       "           ",
+                       "           ",
+                       "           ",
+                       "           ",
+                       "           ",
+                       "           " };
+char save[20];
 
 void tetrisMainLoop() {
     MSDelay(70000);
@@ -50,8 +51,8 @@ void tetrisMainLoop() {
     while (1) {
         TetrisInput();
         TetrisdrawWindow();
-        progress();
-        MSDelay(70000);
+        // progress();
+        MSDelay(30000);
     }
 }
 
@@ -61,7 +62,7 @@ void TetrisInit() {
     for (int i=0; i < 20; i++) {
         print_char_color('#', border);
         for (int j=0; j<10; j++) {
-            print_char(' ');
+            print_char_color(' ', normal);
         }
         print_str_color("#\n", border);
     }
@@ -72,22 +73,21 @@ void TetrisdrawWindow() {
     for (int i=1; i < 21; i++) {
         for (int j=1; j<11; j++) {
             if (board[i-1][j-1] == ' ') {
-                // printPos(j, i, ' ', normal);
-                continue;
+                printPos(j, i, normal, ' ');
             } else if (board[i-1][j-1] == 'r') {
-                printPos(j, i, '#', red);
+                printPos(j, i, red, '#');
             } else if (board[i-1][j-1] == 'c') {
-                printPos(j, i, '#', cyan);
+                printPos(j, i, cyan, '#');
             } else if (board[i-1][j-1] == 'y') {
-                printPos(j, i, '#', yellow);
+                printPos(j, i, yellow, '#');
             } else if (board[i-1][j-1] == 'p') {
-                printPos(j, i, '#', purple);
+                printPos(j, i, purple, '#');
             } else if (board[i-1][j-1] == 'g') {
-                printPos(j, i, '#', green);
+                printPos(j, i, green, '#');
             } else if (board[i-1][j-1] == 'o') {
-                printPos(j, i, '#', orange);
+                printPos(j, i, orange, '#');
             } else if (board[i-1][j-1] == 'b') {
-                printPos(j, i, '#', blue);
+                printPos(j, i, blue, '#');
             }
         }
     }
@@ -97,22 +97,52 @@ void TetrisInput() {
     char in = getC_time(3000);
 
     if (in == KEY_RIGHT) {
-        for (int i=10; i > 0; i--) {
-            for (int j=0; j<19; j++) {
+        for (int i=0; i<20; i++)
+            save[i] = board[i][0];
+        for (int i = 10; i >= 0; i--) {
+            for (int j=1; j < 20; j++) {
                 board[j][i] = board[j][i-1];
+            }
+        }
+        for (int i=0; i<20; i++)
+            board[i][1] = save[i];
+    } else if (in == KEY_LEFT) {
+        for (int i=0; i<20; i++)
+            save[i] = board[i][9];
+        for (int i = 0; i < 11; i++) {
+            for (int j=0; j < 19; j++) {
+                board[j][i] = board[j][i+1];
+            }
+        }
+        for (int i=0; i<20; i++)
+            board[i][8] = save[i];
+    } else if (in == KEY_UP) {
+        for (int i=0; i < 19; i++) {
+            for (int j=0; j<10; j++) {
+                board[i][j] = board[i+1][j];
+            }
+        }
+    } else if (in == KEY_DOWN) {
+        for (int i=19; i > 0; i--) {
+            for (int j=0; j<10; j++) {
+                board[i][j] = board[i-1][j];
             }
         }
     } else if (in == 's') {
         for (int i=0; i<4; i++) {
             board[i+5][0] = S[i][0];
         }
+    } else if (in == 'c') {
+        for (int i=0; i<3; i++) {
+            board[i+5][5] = Car[i][0];
+        }
     }
 }
 
 void progress() {
-    for (int j=0; j<10; j++) {
-        board[0][j] = board[19][j];
-    }
+    // for (int j=0; j<10; j++) {
+    //     board[0][j] = board[19][j];
+    // }
     for (int i=19; i > 0; i--) {
         for (int j=0; j<10; j++) {
             board[i][j] = board[i-1][j];

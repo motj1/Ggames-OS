@@ -32,7 +32,7 @@ void kernel_main() {
 
     char *inp;
 
-    while (1) {
+    /* while (1) {
         print_clear();
         print_str("Welcome to Gracie's games!\n");
 
@@ -115,7 +115,7 @@ void kernel_main() {
                 return;
             MSDelay(1000000);
         }
-    } 
+    }  */
     
-    tetrisMainLoop();
+    PlatformerGameLoop();
 }

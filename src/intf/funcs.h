@@ -150,10 +150,10 @@ char getC_time(uint32_t time);
 
 int strcmp(char *s1, char *s2);
 
-void TTTgameLoop();
-void SnakegameLoop();
-
 unsigned int rand();
 
+void TTTgameLoop();
+void SnakegameLoop();
 void ChessGameloop();
 void tetrisMainLoop();
+void PlatformerGameLoop();
