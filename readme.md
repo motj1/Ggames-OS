@@ -1,6 +1,6 @@
 # Ggames OS
 
-In my OS there are 3 games, Tic Tac Toe against an AI, Snake, and Chess.
+In my OS there are 6 games, Tic Tac Toe against an AI, Snake, Chess, a jumping cube, Prime spiral, and Conways game of life.
 
 ## Opening screen
 
@@ -33,6 +33,24 @@ For Chess you must capture the king to end the game, there is no castling and it
 
 ![](Screenshots/Chess.png)
 
+### A jumping cube
+
+For this game you can jump with space or the up arrow and go left or right, this is limited because I must wait for user input and is quite glitchy.
+
+![](Screenshots/Platformer.png)
+
+### Prime spiral
+
+For the prime spiral you run it and the ulam spiral will be drawn on the screen to fill it.
+
+![](Screenshots/Spiral.png)
+
+### Conways game of life
+
+Conways game of life is a simulation which shows emergence properties from a simple set of rules and my implementation creates a random set of dead or alive cells and applies the rules to it.
+
+![](Screenshots/GOL.png)
+
 ## Compilation and setup
 
 To setup and compile go to [this github page](https://github.com/davidcallanan/os-series/tree/ep2), I used this for the base os and it goes alongside [this youtube video](https://www.youtube.com/watch?v=FkrpUaGThTQ&list=RDCMUCUVahoidFA7F3Asfvamrm7w&index=3).
@@ -45,6 +63,17 @@ This is how to compile if you dont want to go to the other page:
 
 And to run you must have qemu installed and in your path:
  - `qemu-system-x86_64 -cdrom dist/x86_64/kernel.iso`
+
+Or you can use VirtualBox:
+ - Install virtual box from [here](https://www.virtualbox.org/wiki/Downloads)
+ - Make a new machine and select:
+    - the iso image as the one in path to project/dist/x86_64/kernel.iso
+    - Type as other
+    - Other/unknown (64-bit)
+    - Leave the memory as it is
+    - Select (do not add virtual disk)
+    - Finish
+ - Then Start the machine, it will be slower so you can go through and decrease all of the MSDelay commands a factor of 10.
 
 
 ## License
