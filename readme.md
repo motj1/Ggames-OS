@@ -25,7 +25,7 @@ Tic tac toe is against an AI and uses the minimax algorithm.
 
 Snake uses the arrow keys to move and ends when you hit the side. It only moves when you enter input because of the inability for multithreading and becasue I must wait for input.
 
-![](Screenshots/Snake.png)
+![](Screenshots/SNEK.png)
 
 ### Chess
 
