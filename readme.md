@@ -4,30 +4,34 @@ In my OS there are 3 games, Tic Tac Toe against an AI, Snake, and Chess.
 
 ## Opening screen
 
-You can type anything here and press enter or escape for no newline to be created, to play games type:
-- For tic tac toe type ttt into the kernel.
-- For Snake type snake into the kernel.
-- For chess type chess into the kernel.
+You can type anything here and press enter or escape for no newline to be created, the available games are shown on the start screen. 
+The games include:
+ - Tic Tac Toe
+ - Snake
+ - Chess
+ - A jumping cube with a stationary enemy
+ - Prime spiral
+ - Conways game of life
 
-![](Open.png)
+![](Screenshots/Start.png)
 
 ### Tic Tac Toe
 
 Tic tac toe is against an AI and uses the minimax algorithm.
 
-![](TTT.png)
+![](Screenshots/TTT.png)
 
 ### Snake
 
 Snake uses the arrow keys to move and ends when you hit the side. It only moves when you enter input because of the inability for multithreading and becasue I must wait for input.
 
-![](Snake.png)
+![](Screenshots/Snake.png)
 
 ### Chess
 
 For Chess you must capture the king to end the game, there is no castling and it is a fairly flawed implementation but was very fun to make.
 
-![](Chess.png)
+![](Screenshots/Chess.png)
 
 ## Compilation and setup
 
