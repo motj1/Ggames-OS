@@ -1,5 +1,7 @@
 #include "funcs.h"
 
+#define abs(num) (num < 0)? num * -1 : num;
+
 int w = 25, h = 80;
 
 typedef struct playerStruct {
@@ -10,14 +12,14 @@ typedef struct enemyStruct {
     int x, y;
 } enemyStruct;
 
-typedef struct obsticle {
-    int x, y;
-} obsticle;
+typedef struct tile {
+    int x, y, length;
+} tile;
 
 playerStruct player = { 0, 0, 0, 0, 0, 0, 0 };
 enemyStruct enemy = { 10, 0 };
 
-obsticle walls[10];
+tile walls = { 11, 0, 10 };
 
 uint8_t nada = PRINT_COLOR_BLACK | PRINT_COLOR_BLACK << 4;
 uint8_t frame = PRINT_COLOR_LIGHT_GRAY | PRINT_COLOR_LIGHT_GRAY << 4;
@@ -54,10 +56,6 @@ void PlatformerGameLoop() {
 }
 
 void initalise() {
-    for (int i=0; i<10; i++) {
-        walls[i].x = i+10;
-        walls[i].y = 0;
-    }
     print_clear();
     for (int i=0; i<25; i++) {
         print_char('\n');
@@ -74,16 +72,14 @@ void initalise() {
 void Draw() {
     for (int i=0; i<23; i++) {
         for (int j=0; j<78; j++) {
-            int seen = 0;
-            for (int k=0; k<10; k++) {
-                if (walls[k].x == j && walls[k].y == i)
-                    printPos(j + 1, 23 - i, nada, ' ');
-            }
-            if (seen == 0)
-                printPos(j + 1, 23 - i, nada, ' ');
+            // if ((walls.x <= j && walls.x + walls.length >= j) && walls.y == i) {
+            //     printPos(j + 1, 23 - i, frame, '#');
+            // } else
+            printPos(j + 1, 23 - i, nada, ' ');
         }
     }
     printPos(player.x + 1, 23 - player.y, pColour, 'O');
+    printPos(enemy.x + 1, 23 - enemy.y, blood, 'X');
 }
 
 void getInput() {
@@ -91,52 +87,84 @@ void getInput() {
     player.oy = player.y;
     char ch = getC();
     if (ch == KEY_LEFT) {
-        player.horzMove -= 2;
+        player.horzMove -= 1;
     } else if (ch == KEY_RIGHT) {
-        player.horzMove += 2;
+        player.horzMove += 1;
     } else if (ch == KEY_UP || ch == ' ') {
         player.vertMove += 2;
     } 
 }
 
-// int slogic(int playx, int playy) {
-//     if (player.x + 1 <= playx + player.horzMove)
-//         player.x ++;
-//     else if (player.x - 1 >= playx + player.horzMove)
-//         player.x --;
-//     if (player.y + 1 <= playy + player.vertMove)
-//         player.y ++;
-//     else if (player.y - 1 >= playy + player.vertMove)
-//         player.y --;
-    
-//     if (player.x == enemy.x && player.y == enemy.y)
-//         return 0; // -1
-//     if (player.y <= 0) {
-//         player.y = 0;
-//         player.vertMove = 0;
+// int slogic(int tomovex, int tomovey) {
+//     int xtomove = (player.horzMove > 0)? 1 : (player.horzMove < 0)? -1 : 0;
+//     int ytomove = (player.vertMove > 0)? 1 : (player.vertMove < 0)? -1 : 0;
+//     if ((walls.x <= player.x + xtomove && walls.x + walls.length >= player.x + xtomove) && walls.y == player.y + ytomove) {
+//         if (player.y == walls.y) {
+//             if (player.x < walls.x) {
+//                 player.x = walls.x - 1;
+//                 player.horzMove = (player.horzMove > 0)? player.horzMove * -1 : player.horzMove;
+//             }
+//             if (player.x > walls.x + walls.length) {
+//                 player.x = walls.x + walls.length + 1;
+//                 player.horzMove = (player.horzMove < 0)? player.horzMove * -1 : player.horzMove;
+//             }
+//         } else if (player.y > walls.y) {
+//             player.y = walls.y + 1;
+//             player.vertMove = 0;
+//         } else if (player.y < walls.y) {
+//             player.y = walls.y - 1;
+//             player.vertMove = 0;
+//         }
+//         return -1;
 //     }
 
-//     for (int i=0; i<10; i++) {
-//         if (walls[i].x == player.x && walls[i].y == player.y) {
-//             return -1;
-//         }
+//     int ret = 0;
+//     if (tomovex > 0) {
+//         player.x += xtomove;
+//         ret ++;
 //     }
-//     return 0;
+//     if (tomovey > 0) {
+//         player.y += ytomove;
+//         ret += 10;
+//     }
+
+//     return ret;
 // }
 
 int Logic(int tick) {
-    // int playx = player.x;
-    // int playy = player.y;
-    // for (int i = 0; i < (player.horzMove > player.vertMove)? player.horzMove : player.vertMove; i++) {
-    //     int tmpx = player.x, tmpy = player.y;
-    //     if (slogic(playx, playy) == -1) {
-    //         player.x = tmpx;
-    //         player.y = tmpy;
+    // int tomovex = abs(player.horzMove), tomovey = abs(player.vertMove);
+    // for (int i = 0; i < (abs(player.horzMove) > abs(player.vertMove))? player.horzMove : player.vertMove; i++) {
+    //     int ret = slogic(tomovex, tomovey);
+    //     if (ret == -1) {
     //         break;
     //     }
+    //     tomovex --; tomovey --;
     // }
-    player.x += player.horzMove;
-    player.y += player.vertMove;
+
+    // int pas = 0;
+    // if ((walls.x <= player.x + player.horzMove && walls.x + walls.length >= player.x + player.horzMove) && walls.y == player.y + player.vertMove) {
+    //     if (player.y == walls.y) {
+    //         if (player.x < walls.x) {
+    //             player.x = walls.x - 1;
+    //             player.horzMove = (player.horzMove > 0)? player.horzMove * -1 : player.horzMove;
+    //         }
+    //         if (player.x > walls.x + walls.length) {
+    //             player.x = walls.x + walls.length + 1;
+    //             player.horzMove = (player.horzMove < 0)? player.horzMove * -1 : player.horzMove;
+    //         }
+    //     } else if (player.y > walls.y) {
+    //         player.y = walls.y + 1;
+    //         player.vertMove = 0;
+    //     } else if (player.y < walls.y) {
+    //         player.y = walls.y - 1;
+    //         player.vertMove = 0;
+    //     }
+    //     pas = 1;
+    // }
+    // if (pas == 0) {
+        player.x += player.horzMove;
+        player.y += player.vertMove;
+    // }
 
     if (tick % 15 == 0)
         player.horzMove -= (player.horzMove > 0)? 1 : (player.horzMove < 0)? -1 : 0;
@@ -148,14 +176,14 @@ int Logic(int tick) {
     }
 
     if (player.x == enemy.x && player.y == enemy.y)
-        return 0; // -1
+        return -1;
     if (player.y <= 0) {
         player.y = 0;
         player.vertMove = 0;
     } else if (player.y >= 22) {
         player.y = 22;
         player.vertMove = (player.vertMove > 0)? player.vertMove * -1 : player.vertMove;
-    } else {
+    } else { // if (player.vertMove != 0 || (player.y != walls.y + 1 && (player.x >= walls.x && player.x <= walls.x + walls.length)))
         player.vertMove -= 2;
         if (player.y >= 4) {
             player.vertMove -= 2;
@@ -164,8 +192,7 @@ int Logic(int tick) {
     if (player.x <= 0) {
         player.x = 0;
         player.horzMove = (player.horzMove < 0)? player.horzMove * -1 : player.horzMove;
-    }
-    if (player.x >= 77) {
+    } else if (player.x >= 77) {
         player.x = 77;
         player.horzMove = (player.horzMove > 0)? player.horzMove * -1 : player.horzMove;
     }

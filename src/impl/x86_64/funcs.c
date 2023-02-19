@@ -52,6 +52,8 @@ void print_clear() {
     for (size_t i = 0; i < NUM_ROWS; i++) {
         clear_row(i);
     }
+    col = 0;
+    row = 0;
 }
 
 void print_newline() {
@@ -178,6 +180,29 @@ uint8_t inb(uint16_t port) {
     return ret;
 }
 
+void outb(uint16_t port, uint8_t data) {
+    asm volatile("outb %1, %0" : : "dN" (port), "a"(data));
+}
+
+void cli() {
+    asm ("cli");
+}
+
+unsigned read_pit_count(void) {
+    unsigned count = 0;
+
+    // Disable interrupts
+    cli();
+
+    // al = channel in bits 6 and 7, remaining bits clear
+    outb(0x43,0b0000000);
+
+    count = inb(0x40);		// Low byte
+    count |= inb(0x40)<<8;		// High byte
+
+    return count;
+}
+
 char get_input_keycode() {
     char ch = 0;
     while((ch = inb(KEYBOARD_PORT)) != 0) {
@@ -189,13 +214,16 @@ char get_input_keycode() {
 
 char get_input_keycode_time(uint32_t time) {
     char ch = 0;
-    unsigned int i = 0;
+    unsigned int i = 3;
+    outb(0x20, 0x20);
     while((ch = inb(KEYBOARD_PORT)) != 0) {
         if(ch > 0)
             return ch;
+        return 0;
         i ++;
         if (i > time * 1275)
             return 0;
+        outb(KEYBOARD_PORT, KEY_UP);
     }
     return ch;
 }
@@ -370,12 +398,6 @@ void Prininput() {
     } while(ch > 0);
 }
 
-void kernel_entry() {
-    print_str("Type here, one key per second, ENTER to go to next line");
-    print_newline();
-    Prininput();
-}
-
 int strcmp(char *s1, char *s2) {
     int len1 = 0, len2 = 0;
     for (len1; s1[len1] != 0; len1 ++);
@@ -392,4 +414,38 @@ int strcmp(char *s1, char *s2) {
     }
 
     return 1;
+}
+
+
+//Play sound using built in speaker
+static void play_sound(uint32_t nFrequence) {
+    uint32_t Div;
+    uint8_t tmp;
+
+        //Set the PIT to the desired frequency
+    Div = 1193180 / nFrequence;
+    outb(0x43, 0xb6);
+    outb(0x42, (uint8_t) (Div) );
+    outb(0x42, (uint8_t) (Div >> 8));
+
+        //And play the sound using the PC speaker
+    tmp = inb(0x61);
+    if (tmp != (tmp | 3)) {
+        outb(0x61, tmp | 3);
+    }
+}
+
+//make it shutup
+static void nosound() {
+    uint8_t tmp = inb(0x61) & 0xFC;
+
+    outb(0x61, tmp);
+}
+
+//Make a beep
+void beep() {
+    play_sound(1000);
+    MSDelay(10000);
+    nosound();
+        //set_PIT_2(old_frequency);
 }

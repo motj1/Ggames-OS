@@ -26,6 +26,8 @@ SOFTWARE.
 #include <stdint.h>
 #include <stddef.h>
 
+volatile uint32_t CountDown;
+
 #ifndef KEYBOARD_H
 #define KEYBOARD_H
 
@@ -139,7 +141,6 @@ void print_str(char *string);
 void print_str_color(char *str, uint8_t colour);
 void print_int(int num);
 void print_set_color(uint8_t foreground, uint8_t background);
-void kernel_entry();
 void sleep(uint32_t timer_count);
 void MSDelay(unsigned int itime);
 
@@ -157,3 +158,5 @@ void SnakegameLoop();
 void ChessGameloop();
 void tetrisMainLoop();
 void PlatformerGameLoop();
+void GOL_Mainloop();
+void spiralMainLoop();

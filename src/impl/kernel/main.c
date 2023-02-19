@@ -25,16 +25,23 @@ SOFTWARE.
 #include "funcs.h"
 
 void kernel_main() {
-    MSDelay(1000);
+    MSDelay(10000);
 
     print_clear();
     print_set_color(PRINT_COLOR_YELLOW, PRINT_COLOR_BLACK);
 
     char *inp;
 
-    /* while (1) {
+    while (1) {
         print_clear();
         print_str("Welcome to Gracie's games!\n");
+        print_str("The games are: \n");
+        print_str(" - Tic Tac Toe (ttt)\n");
+        print_str(" - Snake (snake)\n");
+        print_str(" - Chess (chess)\n");
+        print_str(" - Physics sym (platformer)\n");
+        print_str(" - Prime spiral (spiral)\n");
+        print_str(" - Conways Game of life (gol)\n");
 
         MSDelay(10000); // 100000
 
@@ -83,6 +90,39 @@ void kernel_main() {
                     in = getC();
                 } while (in != 'q');
                 break;
+            } else if (strcmp(inp, "platformer") || strcmp(inp, "platformer\n")) {
+                do {
+                    print_clear();
+
+                    PlatformerGameLoop();
+
+                    MSDelay(100000);
+                    print_str("Press any key to replay or q to quit\n");
+                    in = getC();
+                } while (in != 'q');
+                break;
+            } else if (strcmp(inp, "spiral") || strcmp(inp, "spiral\n")) {
+                do {
+                    print_clear();
+
+                    spiralMainLoop();
+
+                    MSDelay(100000);
+                    print_str("Press any key to replay or q to quit\n");
+                    in = getC();
+                } while (in != 'q');
+                break;
+            } else if (strcmp(inp, "gol") || strcmp(inp, "gol\n")) {
+                do {
+                    print_clear();
+
+                    GOL_Mainloop();
+
+                    MSDelay(100000);
+                    print_str("Press any key to replay or q to quit\n");
+                    in = getC();
+                } while (in != 'q');
+                break;
             } else {
                 print_str(inp);
                 print_char('\n');
@@ -108,14 +148,12 @@ void kernel_main() {
             inp = input();
             print_str(inp);
 
-            if (strcmp(inp, "help")) {
+            if (strcmp(inp, "help") || strcmp(inp, "help\n")) {
                 print_str("\nNo help for you\n");
                 return;
             } else if (strcmp(inp, "hlt") || strcmp(inp, "hlt\n"))
                 return;
             MSDelay(1000000);
         }
-    }  */
-    
-    PlatformerGameLoop();
+    }
 }

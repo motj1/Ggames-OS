@@ -32,6 +32,7 @@ void ChessGameloop() {
 void ChessInit() {
     // Box = 1,1 - 18,34
     print_clear();
+    print_char('\n');
     for (int i = 0; i<8; i++) {
         // 1,1 - 1,34 LINE
         // 2,1 - 2,34 FEN
