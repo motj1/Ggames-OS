@@ -1,9 +1,12 @@
 #include "funcs.h"
 
 int ai(char board[3][3]);
-int minimax(char board[3][3], int maximizingPlayer);
+int minimax(char board[3][3], int depth, int alpha, int beta, int maximizingPlayer);
 void printBoard(char board[3][3]);
 int checkwin(char board[3][3]);
+
+int max(int num, int onum) { if (num > onum) return num; return onum; }
+int min(int num, int onum) { if (num < onum) return num; return onum; }
 
 void TTTgameLoop() {
     char board[3][3] = { {' ', ' ', ' '},
@@ -112,11 +115,11 @@ int checkwin(char board[3][3]) {
     return 0;
 }
 
-int minimax(char board[3][3], int maximizingPlayer) {
+int minimax(char board[3][3], int depth, int alpha, int beta, int maximizingPlayer) {
     int result = checkwin(board);
     if (result == 1 || result == -1){
         return result;
-    } if (result == 2){
+    } else if (result == 2 || depth == 0){
         return 0;
     }
     if (maximizingPlayer == 1){
@@ -125,11 +128,11 @@ int minimax(char board[3][3], int maximizingPlayer) {
             for (int j = 0; j < 3; j++){
                 if (board[i][j] == ' '){
                     board[i][j] = 'X';
-                    int sol = minimax(board, 0);
+                    value = max(value, minimax(board, depth-1, alpha, beta, 0));
                     board[i][j] = ' ';
-                    if (value < sol){
-                        value = sol;
-                    }
+                    if (value > beta)
+                        break; // beta cutoff
+                    alpha = max(alpha, value);
                 }
             }
         }
@@ -140,11 +143,11 @@ int minimax(char board[3][3], int maximizingPlayer) {
             for (int j = 0; j < 3; j++){
                 if (board[i][j] == ' '){
                     board[i][j] = 'O';
-                    int sol = minimax(board, 1);
+                    value = min(value, minimax(board, depth-1, alpha, beta, 1));
                     board[i][j] = ' ';
-                    if (value > sol){
-                        value = sol;
-                    }
+                    if (value < alpha)
+                        break;
+                    beta = min(beta, value);
                 }
             }
         }
@@ -154,39 +157,21 @@ int minimax(char board[3][3], int maximizingPlayer) {
 
 int ai(char board[3][3]) {
     int bestScore = -800;
-    int bestMove = 0;
-    for (int i = 0; i < 3; i++){
-        for (int j = 0; j < 3; j++){
-            if (board[i][j] == ' '){
-                board[i][j] = 'X';
-                int score = minimax(board, 0);
-                // printw("\n%d",score);
-                board[i][j] = ' ';
-                if (score > bestScore){
-                    bestScore = score;
-                    bestMove = i*3+j;
-                }
-            }
-        }
-    }
-    int bestmove = 0;
-    int largest = -800;
+    int Bmove = 0;
 
     for (int i = 0; i < 3; i++){
         for (int j = 0; j < 3; j++){
             if (board[i][j] == ' '){
                 board[i][j] = 'X';
-                int result = minimax(board, 0);
-                // printw("\n%d",result);
+                int score = minimax(board, 100, -800, 800, 0);
                 board[i][j] = ' ';
-                if (result > largest){
-                    largest = result;
-                    bestmove = i*3+j;
+                if (score > bestScore){
+                    bestScore = score;
+                    Bmove = i*3+j;
                 }
             }
         }
     }
     
-    // getch();
-    return bestMove;
+    return Bmove;
 }
